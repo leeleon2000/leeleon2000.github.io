@@ -1,0 +1,17 @@
+# Ignore everything
+/*
+
+# Except these files & folders
+!/src
+!/public
+!/.github
+!tsconfig.json
+!astro.config.ts
+!.prettierrc.mjs
+!package.json
+!.prettierrc
+!eslint.config.js
+!README.md
+
+# Blog post markdown is author-formatted prose — don't let prettier reflow line wraps.
+src/data/blog/**/*.md

@@ -1,0 +1,136 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Socials from "@/components/Socials.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import Card from "@/components/Card.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import IconRss from "@/assets/icons/IconRss.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import { SITE } from "@/config";
+import { SOCIALS } from "@/constants";
+
+const posts = await getCollection("blog");
+
+const sortedPosts = getSortedPosts(posts);
+const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
+const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+---
+
+<Layout>
+  <Header />
+  <main id="main-content" data-layout="index" class="app-layout">
+    <section
+      id="hero"
+      class:list={["pt-10 pb-10 sm:pt-16 sm:pb-14", "border-b border-border"]}
+    >
+      <h1 class="text-xs font-medium tracking-[0.18em] text-accent uppercase">
+        Leon Lee · Mobile tech lead · Taipei
+      </h1>
+
+      <ul class="mt-6 flex flex-wrap gap-2 text-xs">
+        {
+          [
+            "iOS",
+            "Android",
+            "Flutter",
+            "C++ / JNI",
+            "Hardware-backed crypto",
+            "On-device ML",
+          ].map(tag => (
+            <li class="rounded-full border border-border bg-muted/40 px-3 py-1 font-medium tracking-wide text-foreground/85">
+              {tag}
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm">
+        <LinkButton
+          href="/posts/"
+          class="inline-flex items-center gap-1 font-semibold text-accent hover:underline"
+        >
+          Read the posts
+          <IconArrowRight class="inline-block size-4 rtl:-rotate-180" />
+        </LinkButton>
+        <LinkButton
+          href="/about/"
+          class="inline-flex items-center font-medium hover:text-accent"
+        >
+          About
+        </LinkButton>
+        <a
+          target="_blank"
+          href="/rss.xml"
+          class="inline-flex items-center gap-1 font-medium hover:text-accent"
+          aria-label="rss feed"
+          title="RSS Feed"
+        >
+          <IconRss width={16} height={16} class="inline-block" />
+          RSS
+        </a>
+        {
+          SOCIALS.length > 0 && (
+            <div class="flex items-center">
+              <span class="sr-only">Social links:</span>
+              <Socials />
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    {
+      featuredPosts.length > 0 && (
+        <section
+          id="featured"
+          class:list={[
+            "pt-12 pb-6",
+            { "border-b border-border": recentPosts.length > 0 },
+          ]}
+        >
+          <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
+          <ul>
+            {featuredPosts.map(data => (
+              <Card variant="h3" {...data} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      recentPosts.length > 0 && (
+        <section id="recent-posts" class="pt-12 pb-6">
+          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
+          <ul>
+            {recentPosts.map(
+              (data, index) =>
+                index < SITE.postPerIndex && <Card variant="h3" {...data} />
+            )}
+          </ul>
+        </section>
+      )
+    }
+
+    <div class="my-8 text-center">
+      <LinkButton href="/posts/">
+        All Posts
+        <IconArrowRight class="inline-block rtl:-rotate-180" />
+      </LinkButton>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset?.layout;
+    if (indexLayout) {
+      sessionStorage.setItem("backUrl", "/");
+    }
+  });
+</script>

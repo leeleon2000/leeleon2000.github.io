@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://leeleon2000.github.io/sitemap-index.xml

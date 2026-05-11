@@ -1,0 +1,192 @@
+@import "tailwindcss";
+@import "./typography.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root,
+html[data-theme="light"] {
+  --background: #fdfdfd;
+  --foreground: #282728;
+  --accent: #006cac;
+  --muted: #e6e6e6;
+  --border: #ece9e9;
+}
+
+html[data-theme="dark"] {
+  --background: #212737;
+  --foreground: #eaedf3;
+  --accent: #ff6b01;
+  --muted: #343f60;
+  --border: #ab4b08;
+}
+
+@theme inline {
+  --font-app: var(--font-google-sans-code);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  html {
+    @apply overflow-y-scroll scroll-smooth;
+  }
+  body {
+    @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/75 selection:text-background;
+  }
+  a,
+  button {
+    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  @apply max-w-3xl;
+}
+
+@utility app-layout {
+  @apply mx-auto w-full max-w-app px-4;
+}
+
+.active-nav {
+  @apply underline decoration-wavy decoration-2 underline-offset-8;
+}
+
+/* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 1rem;
+}
+
+/* Mermaid diagrams (inline-rendered by rehype-mermaid). */
+svg[id^="mermaid-"] {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+/* Pin foreignObject text to the same font mermaid measured with so widths fit. */
+svg[id^="mermaid-"] foreignObject div,
+svg[id^="mermaid-"] foreignObject span,
+svg[id^="mermaid-"] foreignObject p {
+  font-family: arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+/* Render the "\n" we substitute for each <br> as an actual line break. */
+svg[id^="mermaid-"] foreignObject > div,
+svg[id^="mermaid-"] foreignObject > div p {
+  white-space: pre-line !important;
+}
+
+/* Make edge labels readable in both themes (mermaid hard-codes white backgrounds). */
+svg[id^="mermaid-"] .edgeLabel,
+svg[id^="mermaid-"] .edgeLabel p,
+svg[id^="mermaid-"] .labelBkg {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+svg[id^="mermaid-"] .edgeLabel rect {
+  fill: var(--background) !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode: recolor nodes/edges to match the site palette. */
+html[data-theme="dark"] svg[id^="mermaid-"] .node > rect,
+html[data-theme="dark"] svg[id^="mermaid-"] .node > circle,
+html[data-theme="dark"] svg[id^="mermaid-"] .node > ellipse,
+html[data-theme="dark"] svg[id^="mermaid-"] .node > polygon,
+html[data-theme="dark"] svg[id^="mermaid-"] .node > path {
+  fill: var(--muted) !important;
+  stroke: var(--border) !important;
+}
+html[data-theme="dark"] svg[id^="mermaid-"] .cluster > rect {
+  fill: color-mix(in srgb, var(--muted) 40%, transparent) !important;
+  stroke: var(--border) !important;
+}
+html[data-theme="dark"] svg[id^="mermaid-"] .flowchart-link,
+html[data-theme="dark"] svg[id^="mermaid-"] .edgePath .path,
+html[data-theme="dark"] svg[id^="mermaid-"] .marker,
+html[data-theme="dark"] svg[id^="mermaid-"] .marker.cross {
+  stroke: var(--foreground) !important;
+}
+html[data-theme="dark"] svg[id^="mermaid-"] .arrowheadPath,
+html[data-theme="dark"] svg[id^="mermaid-"] .marker {
+  fill: var(--foreground) !important;
+}
+/* Sequence-diagram arrow heads are unclassed <path>s inside named <marker>s. */
+html[data-theme="dark"] svg[id^="mermaid-"] marker[id$="-arrowhead"] path,
+html[data-theme="dark"] svg[id^="mermaid-"] marker[id$="-filled-head"] path,
+html[data-theme="dark"]
+  svg[id^="mermaid-"]
+  marker[id$="-solidTopArrowHead"]
+  path,
+html[data-theme="dark"]
+  svg[id^="mermaid-"]
+  marker[id$="-solidBottomArrowHead"]
+  path {
+  fill: var(--foreground) !important;
+}
+html[data-theme="dark"]
+  svg[id^="mermaid-"]
+  marker[id$="-stickTopArrowHead"]
+  path,
+html[data-theme="dark"]
+  svg[id^="mermaid-"]
+  marker[id$="-stickBottomArrowHead"]
+  path,
+html[data-theme="dark"] svg[id^="mermaid-"] marker[id$="-crosshead"] path {
+  stroke: var(--foreground) !important;
+}
+
+/* Multi-line message text (mermaid splits a `<br/>` into a second line at +17px
+   from the message baseline) ends up under mermaid's self-loop arc and its
+   autonumber badge. Push the self-loop curve, its number badge, and the line
+   holding the marker down so they clear the second line of text. */
+svg[id^="mermaid-"] path.messageLine0,
+svg[id^="mermaid-"] path.messageLine1,
+svg[id^="mermaid-"] text.sequenceNumber,
+svg[id^="mermaid-"] line[marker-start*="sequencenumber"] {
+  transform: translateY(18px);
+}
+
+/* Sequence-diagram text: mermaid hard-codes #333 fill on every text class,
+   which is invisible against the dark page background. */
+html[data-theme="dark"] svg[id^="mermaid-"] .messageText,
+html[data-theme="dark"] svg[id^="mermaid-"] .loopText,
+html[data-theme="dark"] svg[id^="mermaid-"] .loopText > tspan,
+html[data-theme="dark"] svg[id^="mermaid-"] .labelText,
+html[data-theme="dark"] svg[id^="mermaid-"] .labelText > tspan,
+html[data-theme="dark"] svg[id^="mermaid-"] text.actor,
+html[data-theme="dark"] svg[id^="mermaid-"] text.actor > tspan {
+  fill: var(--foreground) !important;
+}
+/* Sequence-diagram actor / activation / loop boxes — re-skin like flowchart nodes. */
+html[data-theme="dark"] svg[id^="mermaid-"] .actor,
+html[data-theme="dark"] svg[id^="mermaid-"] .labelBox,
+html[data-theme="dark"] svg[id^="mermaid-"] .activation0,
+html[data-theme="dark"] svg[id^="mermaid-"] .activation1,
+html[data-theme="dark"] svg[id^="mermaid-"] .activation2 {
+  fill: var(--muted) !important;
+  stroke: var(--border) !important;
+}
+/* Sequence-diagram lifelines and signal arrows. */
+html[data-theme="dark"] svg[id^="mermaid-"] line.actor-line,
+html[data-theme="dark"] svg[id^="mermaid-"] .messageLine0,
+html[data-theme="dark"] svg[id^="mermaid-"] .messageLine1 {
+  stroke: var(--foreground) !important;
+}
