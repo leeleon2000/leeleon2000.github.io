@@ -423,3 +423,9 @@ Manual copy-paste looks like a workflow gap waiting to be automated, but automat
 A device matrix log accompanies the manual workflow: device, OS version, format combination, result. Not CI output — a low-tech record that proves the matrix has been swept across real hardware combinations. For a guide making this claim, that's the format the proof has to take.
 
 Layers 1–3 are automated — Dart unit tests with mocked channels, real-device integration tests for native crypto, in `test/` and `integration_test/`. Layer 4 stays manual on purpose. Layer 5 splits: same-platform edge cases are automated, cross-platform variants ride along with the manual workflow.
+
+## Demo & Source Code
+
+Full Flutter plugin implementation with both iOS and Android native code, plus an example app demonstrating round-trip encryption between platforms: [github.com/leeleon2000/flutter_hardware_secure_crypto_demo](https://github.com/leeleon2000/flutter_hardware_secure_crypto_demo).
+
+MIT license. Tested on iOS 15+ and Android 11+.
